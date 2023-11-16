@@ -231,11 +231,11 @@ class _AnimalScreenState extends State<AnimalScreen> {
     Animal(
       resposta: 'CACHORRO',
       audioAsset: 'filhote_latindo.wav',
-      imagemAsset: 'assets/cachorro.png',
+      imagemAsset: 'asssets/cachorro.png',
     ),
     Animal(
       resposta: 'GATO',
-      audioAsset: 'assets/gato.mp3',
+      audioAsset: 'gato.mp3',
       imagemAsset: 'assets/gato.png',
     ),
     Animal(
@@ -322,17 +322,6 @@ class _AnimalScreenState extends State<AnimalScreen> {
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                image: AssetImage('assets/background.png'),
-                opacity: 0.4,
-                // Substitua pelo caminho da imagem desejada
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
