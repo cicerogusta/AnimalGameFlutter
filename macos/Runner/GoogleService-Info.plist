@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAfycxmFA6p-zfUl2eD-lnIk2L6xdu6M_4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>314788412035</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.animalGame.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>app-edu-ifpb</string>
+	<key>STORAGE_BUCKET</key>
+	<string>app-edu-ifpb.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:314788412035:ios:cf8e0d1c2c54a29aa039b6</string>
+</dict>
+</plist>

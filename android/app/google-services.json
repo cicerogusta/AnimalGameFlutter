@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "314788412035",
+    "project_id": "app-edu-ifpb",
+    "storage_bucket": "app-edu-ifpb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314788412035:android:aa6941ad9ec1e6afa039b6",
+        "android_client_info": {
+          "package_name": "com.example.animal_game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk6wyKZskrEXNXw80ihNU1zeIgbwOVDSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
