@@ -231,7 +231,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
     Animal(
       resposta: 'CACHORRO',
       audioAsset: 'filhote_latindo.wav',
-      imagemAsset: 'asssets/cachorro.png',
+      imagemAsset: 'assets/cachorro.png',
     ),
     Animal(
       resposta: 'GATO',
@@ -341,10 +341,10 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Falta a letra: $respostaAtual',
+                  'Que animal é esse? $respostaAtual',
                   style: TextStyle(
                       fontSize: 22,
-                      color: Color.fromARGB(255, 246, 246, 246),
+                      color: Colors.black,
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
