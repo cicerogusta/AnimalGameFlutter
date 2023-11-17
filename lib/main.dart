@@ -519,7 +519,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
               children: [
                 const Text(
                   'Toque na imagem:',
-                  style: TextStyle(fontSize: 18, color: Colors.yellow),
+                  style: TextStyle(fontSize: 18, color: Colors.blue),
                 ),
                 InkWell(
                   onTap: () {
