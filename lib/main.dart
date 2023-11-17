@@ -58,8 +58,19 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen({super.key});
 
+  void _playSound() {
+    try {
+      player.setReleaseMode(ReleaseMode.loop);
+      player.play(AssetSource('gamemusic.mp3'));
+    } catch (e) {
+      print('Erro ao reproduzir áudio: $e');
+      // Lidar com o erro ou fornecer feedback ao usuário, se necessário
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _playSound();
     return Scaffold(
       body: Center(
         child: Column(
