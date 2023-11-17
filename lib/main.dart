@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
@@ -31,6 +32,26 @@ class Animal {
       required this.audioAsset,
       required this.imagemAsset});
 }
+
+class User {
+  final String nome;
+  final String email;
+  final String senha;
+
+  User(
+      {required this.nome,
+        required this.email,
+        required this.senha});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nome': nome,
+      'email': email,
+      'senha': senha,
+    };
+  }
+}
+
 
 class HomeScreen extends StatelessWidget {
   final player = AudioPlayer();
@@ -85,6 +106,12 @@ class LoginPage extends StatefulWidget {
 
   @override
   State<LoginPage> createState() => _LoginPageState();
+}
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -203,16 +230,180 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 25),
             Text('Não tem conta?'),
             SizedBox(width: 10),
-            Text(
-              'Registre-se',
-              style: TextStyle(color: Colors.blue),
-            )
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterPage()),
+                  );
+                },
+                child: Text(
+                  'Registre-se',
+                  style: TextStyle(color: Colors.blue),
+                ),
+
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+class _RegisterPageState extends State<RegisterPage> {
+  final databaseReference = FirebaseDatabase.instance.reference();
+  final _nomeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
+
+  Future registrar() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _senhaController.text.trim(),
+      );
+      print("Login bem-sucedido: ${userCredential.user!.uid}");
+      User user = User(nome: _nomeController.text.trim(), email: _emailController.text.trim(), senha: _senhaController.text.trim());
+      Map<String, dynamic> userMap = user.toJson();
+      databaseReference.child('users').push().set(userMap);
+      _navigateHomeScreen();
+    } catch (e) {
+      print("Erro no login: $e");
+    }
+  }
+
+  void _navigateHomeScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _emailController.dispose();
+    _senhaController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFCDDEFF),
+      body: SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Text(
+                'Registre-se',
+                style: TextStyle(
+                  fontFamily: 'Giraffe',
+                  fontSize: 60.0,
+                  color: Colors.blue,
+                ),
+              ),
+              SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: TextField(
+                  controller: _nomeController,
+                  textAlign: TextAlign.left,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(20.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    hintText: "Nome",
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 25),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: TextField(
+                  controller: _emailController,
+                  textAlign: TextAlign.left,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(20.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    hintText: "Email",
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 25),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: TextField(
+                  obscureText: true,
+                  controller: _senhaController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(20.0),
+                    filled: true,
+                    fillColor: Colors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    hintText: "Senha",
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 25),
+              GestureDetector(
+                onTap: () {
+                  registrar();
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  margin: const EdgeInsets.symmetric(horizontal: 120),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF2C3DBF),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "Registrar",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 25),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 class AnimalScreen extends StatefulWidget {
   const AnimalScreen({super.key});
