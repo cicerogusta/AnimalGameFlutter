@@ -728,6 +728,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
         );
       },
     );
+    _selecionarNovoAnimal();
   }
 }
 
@@ -747,8 +748,23 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   final List<Animal> listaDeAnimais = [
     Animal(
       resposta: 'CACHORRO',
-      audioAsset: 'assets/filhote_latindo.wav',
+      audioAsset: 'filhote_latindo.wav',
       imagemAsset: 'assets/cachorro.png',
+    ),
+    Animal(
+      resposta: 'GATO',
+      audioAsset: 'gato.mp3',
+      imagemAsset: 'assets/gato.png',
+    ),
+    Animal(
+      resposta: 'LEÃO',
+      audioAsset: 'leao.mp3',
+      imagemAsset: 'assets/leao.png',
+    ),
+    Animal(
+      resposta: 'ELEFANTE',
+      audioAsset: 'elefante.mp3',
+      imagemAsset: 'assets/elefante.png',
     ),
 
     // Adicione mais animais conforme necessário
@@ -818,14 +834,24 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     }
   }
 
+  void _reiniciarJogoComDelay() {
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _selecionarNovoAnimal();
+      });
+    });
+  }
+
   void _onSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       _currentWords = result.recognizedWords;
       print(_currentWords);
       if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
         _showDialog();
+        _reiniciarJogoComDelay();
       }
     });
+
   }
 
   @override
