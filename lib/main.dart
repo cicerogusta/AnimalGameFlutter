@@ -599,8 +599,8 @@ class _AnimalScreenState extends State<AnimalScreen> {
 
   void _selecionarNovoAnimal() {
     try {
-      animalSelecionado =
-          listaDeAnimais[Random().nextInt(listaDeAnimais.length)];
+      listaDeAnimais.shuffle();
+      animalSelecionado = listaDeAnimais.first;
       respostaAtual = '_${animalSelecionado.resposta.substring(1)}';
       letraSelecionada = null;
       letrasIncorretas.clear();
@@ -728,7 +728,6 @@ class _AnimalScreenState extends State<AnimalScreen> {
         );
       },
     );
-    _selecionarNovoAnimal();
   }
 }
 
