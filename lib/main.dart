@@ -49,10 +49,16 @@ class User {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  final player = AudioPlayer();
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-  HomeScreen({super.key});
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  final player = AudioPlayer();
 
   void _playSound() {
     try {
@@ -64,72 +70,115 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _playSound();
+  }
+
+
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    // TODO: implement dispose
+    player.stop();
+    player.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    if (state == AppLifecycleState.paused) {
+      player.stop();
+    }
+
+    if (state == AppLifecycleState.detached) {
+      player.stop();
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      player.stop();
+    }
+    if (state == AppLifecycleState.resumed) {
+      _playSound();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _playSound();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 147, 202, 228),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: Container(
               width: 250,
-              height: 250,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AnimalScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-                child: const Text(
-                  "Iniciar Adivinhação",
-                  style: TextStyle(
-                    fontSize: 25,
-                  ),
+              height: 100,
+              margin: EdgeInsets.symmetric(vertical: 21, horizontal: 0),
+              child: Text(
+                "Seja bem-vindo(a)",
+                style: TextStyle(
+                  fontSize: 28
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: 250,
-              height: 250,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const FalaParaTextoScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
+          ),
+          SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AnimalScreen(),
                 ),
-                child: const Text(
-                  "Iniciar Fala para texto",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-          ],
-        ),
+            child: const Text(
+              "Adivinhação",
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FalaParaTextoScreen(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            child: const Text(
+              "Identificador Fala",
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -850,7 +899,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
         _reiniciarJogoComDelay();
       }
     });
-
   }
 
   @override
