@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const FalaParaTextoScreen(),
+                  builder: (context) =>  FalaParaTextoScreen(musicPlayer: player)
                 ),
               );
             },
@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
             ),
             child: const Text(
-              "Identificador Fala",
+              "Falar Animal",
               style: TextStyle(
                 fontSize: 25,
               ),
@@ -247,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            'assets/futebor.gif',
+                            'assets/logo-ifpb-pdf.png',
                             width: 250,
                             height: 250,
                           ),
@@ -644,7 +644,44 @@ class _AnimalScreenState extends State<AnimalScreen> {
   void initState() {
     super.initState();
     _selecionarNovoAnimal();
+    Future.delayed(Duration.zero, () {
+      exibirMensagemBV(context, animalSelecionado);
+    });
   }
+
+  void exibirMensagemBV(BuildContext context, Animal animal) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Jogo de Adivinhação'), // Remova o título
+          content: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Torna o AlertDialog menor
+              children: [
+                Image.asset(
+                  animal.imagemAsset,
+                  width: 100, // ajuste conforme necessário
+                  height: 100,
+                ),
+                SizedBox(height: 10), // Espaçamento entre a imagem e o texto
+                Text('Adivinhe a letra que esta faltando usando a imagem e o som do animal tocando na imagem, e abaixo selecione a letra que esta faltando', textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   void _selecionarNovoAnimal() {
     try {
@@ -781,13 +818,17 @@ class _AnimalScreenState extends State<AnimalScreen> {
 }
 
 class FalaParaTextoScreen extends StatefulWidget {
-  const FalaParaTextoScreen({Key? key}) : super(key: key);
+
+  final AudioPlayer musicPlayer;
+  FalaParaTextoScreen({required this.musicPlayer});
 
   @override
   _FalaParaTextoScreenState createState() => _FalaParaTextoScreenState();
 }
 
 class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
+
+
   final player = AudioPlayer();
   late Animal animalSelecionado;
   late String respostaAtual;
@@ -821,11 +862,48 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () {
+      exibirMensagemBV(context, animalSelecionado);
+    });
     _initSpeech();
     _selecionarNovoAnimal();
+
   }
 
-  void _playSound() {
+  void exibirMensagemBV(BuildContext context, Animal animal) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Jogo Falar Animal'),
+          content: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  animal.imagemAsset,
+                  width: 100, // ajuste conforme necessário
+                  height: 100,
+                ),
+                SizedBox(height: 10), // Espaçamento entre a imagem e o texto
+                Text('Toque na imagem, ouça o som do animal e depois toque no microfone e diga qual é o animal', textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _playSoundAnimal() {
     player.play(AssetSource(animalSelecionado.audioAsset));
   }
 
@@ -856,6 +934,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
   /// This has to happen only once per app
   void _initSpeech() async {
+
     await _speechToText.initialize();
     setState(() {});
   }
@@ -873,6 +952,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
   /// Each time to start a speech recognition session
   void _startListening() async {
+
     if (await Permission.microphone.isGranted) {
       await _speechToText.listen(onResult: _onSpeechResult);
       setState(() {});
@@ -886,19 +966,27 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     Future.delayed(Duration(seconds: 2), () {
       setState(() {
         _selecionarNovoAnimal();
+        player.play(AssetSource('gamemusic.mp3'));
       });
     });
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
+
     setState(() {
+
+
       _currentWords = result.recognizedWords;
       print(_currentWords);
       if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
         _showDialog();
         _reiniciarJogoComDelay();
+      } else {
+        player.play(AssetSource('gamemusic.mp3'));
       }
+
     });
+
   }
 
   @override
@@ -919,7 +1007,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 ),
                 InkWell(
                   onTap: () {
-                    _playSound();
+                    _playSoundAnimal();
                   },
                   child: Image.asset(
                     animalSelecionado.imagemAsset,
@@ -929,11 +1017,12 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 const SizedBox(height: 16),
                 Text(
                   'Qual o animal?',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                  style: TextStyle(fontSize: 18, color: Colors.black),
                 ),
                 const SizedBox(height: 16),
                 FloatingActionButton(
                   onPressed: () {
+                    widget.musicPlayer.stop();
                     _startListening();
                   },
                   tooltip: 'Listen',
