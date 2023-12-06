@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:math';
 
@@ -27,10 +28,9 @@ class Animal {
   final String audioAsset;
   final String imagemAsset;
 
-  Animal(
-      {required this.resposta,
-      required this.audioAsset,
-      required this.imagemAsset});
+  Animal({required this.resposta,
+    required this.audioAsset,
+    required this.imagemAsset});
 }
 
 class User {
@@ -70,14 +70,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _playSound();
   }
-
 
 
   @override
@@ -119,17 +118,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Center(
             child: Container(
               width: 250,
-              height: 100,
+              height: 250,
               margin: EdgeInsets.symmetric(vertical: 21, horizontal: 0),
               child: Text(
-                "Seja bem-vindo(a)",
+                "Seja bem-vindo(a) \n \n Escolha um jogo para começar:",
                 style: TextStyle(
-                  fontSize: 28
+                    fontSize: 28
                 ),
               ),
             ),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 5),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -157,7 +156,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>  FalaParaTextoScreen(musicPlayer: player)
+                    builder: (context) =>
+                        FalaParaTextoScreen(musicPlayer: player)
                 ),
               );
             },
@@ -201,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
   Future login() async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _senhaController.text.trim(),
       );
@@ -273,7 +273,10 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(45),
                     )),
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 //height: MediaQuery.of(context).size.height,
                 child: SingleChildScrollView(
                   child: SizedBox(
@@ -312,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Colors.grey.shade400),
+                                    BorderSide(color: Colors.grey.shade400),
                                     borderRadius: BorderRadius.circular(20)),
                                 labelText: "Email",
                                 labelStyle: TextStyle(color: Colors.black)),
@@ -334,7 +337,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Colors.grey.shade400),
+                                  BorderSide(color: Colors.grey.shade400),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 hintText: "Senha",
@@ -414,7 +417,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future registrar() async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _senhaController.text.trim(),
       );
@@ -454,8 +457,14 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Color(0xFFCDDEFF),
       body: SingleChildScrollView(
         child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -511,7 +520,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.grey.shade400),
+                              BorderSide(color: Colors.grey.shade400),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             hintText: "Nome",
@@ -535,7 +544,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.grey.shade400),
+                              BorderSide(color: Colors.grey.shade400),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             hintText: "Email",
@@ -559,7 +568,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.grey.shade400),
+                              BorderSide(color: Colors.grey.shade400),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             hintText: "Senha",
@@ -665,7 +674,9 @@ class _AnimalScreenState extends State<AnimalScreen> {
                   height: 100,
                 ),
                 SizedBox(height: 10), // Espaçamento entre a imagem e o texto
-                Text('Adivinhe a letra que esta faltando usando a imagem e o som do animal tocando na imagem, e abaixo selecione a letra que esta faltando', textAlign: TextAlign.center),
+                Text(
+                    'Adivinhe a letra que esta faltando usando a imagem e o som do animal tocando na imagem, e abaixo selecione a letra que esta faltando',
+                    textAlign: TextAlign.center),
               ],
             ),
           ),
@@ -820,6 +831,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
 class FalaParaTextoScreen extends StatefulWidget {
 
   final AudioPlayer musicPlayer;
+
   FalaParaTextoScreen({required this.musicPlayer});
 
   @override
@@ -827,7 +839,6 @@ class FalaParaTextoScreen extends StatefulWidget {
 }
 
 class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
-
 
   final player = AudioPlayer();
   late Animal animalSelecionado;
@@ -863,8 +874,10 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+
       exibirMensagemBV(context, animalSelecionado);
     });
+    widget.musicPlayer.play(AssetSource('gamemusic.mp3'));
     _initSpeech();
     _selecionarNovoAnimal();
 
@@ -886,7 +899,9 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                   height: 100,
                 ),
                 SizedBox(height: 10), // Espaçamento entre a imagem e o texto
-                Text('Toque na imagem, ouça o som do animal e depois toque no microfone e diga qual é o animal', textAlign: TextAlign.center),
+                Text(
+                    'Toque na imagem, ouça o som do animal e depois toque no microfone e diga qual é o animal',
+                    textAlign: TextAlign.center),
               ],
             ),
           ),
@@ -934,27 +949,62 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
   /// This has to happen only once per app
   void _initSpeech() async {
-
     await _speechToText.initialize();
-    setState(() {});
+    setState(() {
+    });
   }
 
   /// Request microphone permission
   Future<void> _requestMicrophonePermission() async {
-    if (await Permission.microphone.request().isGranted) {
-      // Microphone permission granted, you can now initialize speech recognition
+    await Permission.microphone
+        .onDeniedCallback(() {
+      // Your code
+    })
+        .onGrantedCallback(() {
+
       _initSpeech();
-    } else {
-      // Permission denied
-      // You can handle this case, show a message to the user, or request permission again
-    }
+    })
+        .onPermanentlyDeniedCallback(() {
+      // Your code
+    })
+        .onRestrictedCallback(() {
+      // Your code
+    })
+        .onLimitedCallback(() {
+      // Your code
+    })
+        .onProvisionalCallback(() {
+      // Your code
+    })
+        .request();
   }
+
+  void showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      // Duração do toast (Toast.LENGTH_SHORT ou Toast.LENGTH_LONG)
+      gravity: ToastGravity.BOTTOM,
+      // Posição do toast (TOP, BOTTOM, CENTER)
+      timeInSecForIosWeb: 1,
+      // Duração no iOS
+      backgroundColor: Colors.black,
+      // Cor de fundo
+      textColor: Colors.white,
+      // Cor do texto
+      fontSize: 16.0, // Tamanho da fonte
+    );
+  }
+
 
   /// Each time to start a speech recognition session
   void _startListening() async {
-
     if (await Permission.microphone.isGranted) {
       await _speechToText.listen(onResult: _onSpeechResult);
+
+      if(_speechToText.isListening) {
+        widget.musicPlayer.stop();
+      }
       setState(() {});
     } else {
       // Microphone permission is not granted, request it
@@ -972,9 +1022,8 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
-
+    widget.musicPlayer.stop();
     setState(() {
-
 
       _currentWords = result.recognizedWords;
       print(_currentWords);
@@ -984,8 +1033,8 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
       } else {
         player.play(AssetSource('gamemusic.mp3'));
       }
-
     });
+
 
   }
 
@@ -1003,7 +1052,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
               children: [
                 const Text(
                   'Toque na imagem:',
-                  style: TextStyle(fontSize: 18, color: Colors.yellow),
+                  style: TextStyle(fontSize: 18, color: Colors.blue),
                 ),
                 InkWell(
                   onTap: () {
@@ -1022,8 +1071,9 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 const SizedBox(height: 16),
                 FloatingActionButton(
                   onPressed: () {
-                    widget.musicPlayer.stop();
+
                     _startListening();
+                    widget.musicPlayer.play(AssetSource('gamemusic.mp3'));
                   },
                   tooltip: 'Listen',
                   child: Icon(
