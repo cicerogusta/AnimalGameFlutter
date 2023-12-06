@@ -922,12 +922,12 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     player.play(AssetSource(animalSelecionado.audioAsset));
   }
 
-  void _showDialog() {
+  void _showDialog(String msg) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Parabéns, você acertou!'),
+          title: Text(msg),
           content: Text('A resposta é: ${animalSelecionado.resposta}'),
           actions: <Widget>[
             TextButton(
@@ -1028,9 +1028,10 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
       _currentWords = result.recognizedWords;
       print(_currentWords);
       if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
-        _showDialog();
+        _showDialog("Parabéns! Você acertou!");
         _reiniciarJogoComDelay();
       } else {
+        _showDialog("Você errou! Tente novamente!");
         player.play(AssetSource('gamemusic.mp3'));
       }
     });
