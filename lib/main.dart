@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AnimalScreen(),
+                  builder: (context) =>  AnimalScreen(musicPlayer: player),
                 ),
               );
             },
@@ -610,7 +610,10 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class AnimalScreen extends StatefulWidget {
-  const AnimalScreen({super.key});
+
+  final AudioPlayer musicPlayer;
+
+  AnimalScreen({required this.musicPlayer});
 
   @override
   _AnimalScreenState createState() => _AnimalScreenState();
@@ -767,6 +770,10 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 InkWell(
                   onTap: () {
                     _playSound();
+                   widget.musicPlayer.pause();
+                    Future.delayed(Duration(seconds: 12), () {
+                      widget.musicPlayer.resume();
+                    });
                   },
                   child: Image.asset(
                     animalSelecionado.imagemAsset,
@@ -811,27 +818,33 @@ class _AnimalScreenState extends State<AnimalScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('PARABÉNS!'),
-          content: Column(
-            children: [
-              Text('VOCÊ ACERTOU!'),
-              SizedBox(height: 10),
-              Image.asset(
-                'assets/confetti-gif-1.gif', // Substitua pelo caminho da sua imagem
-                height: 25,
-                width: 25,
+        return FractionallySizedBox(
+          widthFactor: 0.8, // Defina a largura do AlertDialog como 80% da largura da tela
+          child: AlertDialog(
+            title: Text('PARABÉNS!'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // Use MainAxisSize.min para permitir que o AlertDialog diminua em altura
+              children: [
+                Text('VOCÊ ACERTOU!'),
+                SizedBox(height: 10),
+                Image.asset(
+                  'assets/confetti-gif-1.gif', // Substitua pelo caminho da sua imagem
+                  height: 100, // Ajuste a altura da imagem conforme necessário
+                  width: 100, // Ajuste a largura da imagem conforme necessário
+                ),
+              ],
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajuste o padding do conteúdo
+            titlePadding: EdgeInsets.all(15), // Ajuste o padding do título
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Fechar'),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Fechar'),
-            ),
-          ],
         );
       },
     );
@@ -1106,6 +1119,10 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 InkWell(
                   onTap: () {
                     _playSoundAnimal();
+                    widget.musicPlayer.pause();
+                    Future.delayed(Duration(seconds: 12), () {
+                      widget.musicPlayer.resume();
+                    });
                   },
                   child: Image.asset(
                     animalSelecionado.imagemAsset,
