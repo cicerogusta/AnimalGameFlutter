@@ -988,17 +988,33 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Você errou!'),
-          content: Text('Tente novamente!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Fechar'),
+        return FractionallySizedBox(
+          widthFactor: 0.8, // Defina a largura do AlertDialog como 80% da largura da tela
+          child: AlertDialog(
+            title: Text('NÃO FOI DESSA VEZ!'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // Use MainAxisSize.min para permitir que o AlertDialog diminua em altura
+              children: [
+                Text('TENTE NOVAMENTE!'),
+                SizedBox(height: 10),
+                Image.asset(
+                  'assets/no-way-x.gif', // Substitua pelo caminho da sua imagem
+                  height: 100, // Ajuste a altura da imagem conforme necessário
+                  width: 100, // Ajuste a largura da imagem conforme necessário
+                ),
+              ],
             ),
-          ],
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajuste o padding do conteúdo
+            titlePadding: EdgeInsets.all(15), // Ajuste o padding do título
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Fechar'),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -1092,6 +1108,8 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
       if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
         parabens(context);
         _reiniciarJogoComDelay();
+      } else {
+        _showDialogErro();
       }
 
       widget.musicPlayer.resume();
