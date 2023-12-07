@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               height: 250,
               margin: EdgeInsets.symmetric(vertical: 21, horizontal: 0),
               child: Text(
-                "Seja bem-vindo(a) \n \n Escolha um jogo para começar:",
+                "SEJA BEM-VINDO(A) \n \n ESCOLHA UM JOGO PARA COMEÇAR:",
                 style: TextStyle(
                     fontSize: 28
                 ),
@@ -666,7 +666,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Jogo de Adivinhação'), // Remova o título
+          title: Text('JOGO DE ADIVINHAÇÃO'), // Remova o título
           content: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min, // Torna o AlertDialog menor
@@ -678,7 +678,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 ),
                 SizedBox(height: 10), // Espaçamento entre a imagem e o texto
                 Text(
-                    'Adivinhe a letra que esta faltando usando a imagem e o som do animal tocando na imagem, e abaixo selecione a letra que esta faltando',
+                    'ADIVINHE A LETRA QUE ESTA FALTANDO USANDO A IMAGEM E O SOM TOCANDO NA IMAGEM, E ABAIXO SELECIONE A LETRA QUE ESTÁ FALTANDO',
                     textAlign: TextAlign.center),
               ],
             ),
@@ -688,7 +688,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Fechar'),
+              child: Text('OK'),
             ),
           ],
         );
@@ -755,7 +755,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
     letrasAZ.shuffle();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Jogo de Adivinhação"),
+        title: Text("JOGO DE ADIVINHAÇÃO"),
       ),
       body: Stack(
         children: [
@@ -764,7 +764,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Toque na imagem:',
+                  'TOQUE NA IMAGEM:',
                   style: TextStyle(fontSize: 18, color: Colors.blue),
                 ),
                 InkWell(
@@ -782,7 +782,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Que animal é esse? $respostaAtual',
+                  'QUE ANIMAL É ESTE? $respostaAtual',
                   style: TextStyle(
                       fontSize: 22,
                       color: Colors.black,
@@ -841,7 +841,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Fechar'),
+                child: Text('OK'),
               ),
             ],
           ),
@@ -911,7 +911,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Jogo Falar Animal'),
+          title: Text('JOGO FALAR ANIMAL'),
           content: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -923,7 +923,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 ),
                 SizedBox(height: 10), // Espaçamento entre a imagem e o texto
                 Text(
-                    'Toque na imagem, ouça o som do animal e depois toque no microfone e diga qual é o animal',
+                    'TOQUE NA IMAGEM, OUÇA O SOM DO ANIMAL E DEPOIS TOQUE NO MICROFONE E DIGA QUAL É O ANIMAL',
                     textAlign: TextAlign.center),
               ],
             ),
@@ -1104,7 +1104,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Jogo Falar Animal"),
+        title: Text("JOGO FALAR ANIMAL"),
       ),
       body: Stack(
         children: [
@@ -1113,7 +1113,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Toque na imagem:',
+                  'TOQUE NA IMAGEM:',
                   style: TextStyle(fontSize: 18, color: Colors.blue),
                 ),
                 InkWell(
