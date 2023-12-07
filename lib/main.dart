@@ -732,7 +732,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
         letraSelecionada = letra;
         if (!respostaAtual.contains('_') &&
             animalSelecionado.resposta == respostaAtual) {
-          _showDialog();
+          parabens(context);
           _reiniciarJogoComDelay();
         }
       });
@@ -807,17 +807,27 @@ class _AnimalScreenState extends State<AnimalScreen> {
     );
   }
 
-  void _showDialog() {
+  void parabens(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Parabéns, você acertou!'),
-          content: Text('A resposta é: ${animalSelecionado.resposta}'),
-          actions: <Widget>[
+          title: Text('PARABÉNS!'),
+          content: Column(
+            children: [
+              Text('VOCÊ ACERTOU!'),
+              SizedBox(height: 10),
+              Image.asset(
+                'assets/confetti-gif-1.gif', // Substitua pelo caminho da sua imagem
+                height: 25,
+                width: 25,
+              ),
+            ],
+          ),
+          actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
               child: Text('Fechar'),
             ),
@@ -826,6 +836,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
       },
     );
   }
+
 }
 
 class FalaParaTextoScreen extends StatefulWidget {
@@ -877,7 +888,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
       exibirMensagemBV(context, animalSelecionado);
     });
-    widget.musicPlayer.play(AssetSource('gamemusic.mp3'));
     _initSpeech();
     _selecionarNovoAnimal();
 
@@ -922,13 +932,52 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     player.play(AssetSource(animalSelecionado.audioAsset));
   }
 
-  void _showDialog(String msg) {
+  void parabens(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          widthFactor: 0.8, // Defina a largura do AlertDialog como 80% da largura da tela
+          child: AlertDialog(
+            title: Text('PARABÉNS!'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // Use MainAxisSize.min para permitir que o AlertDialog diminua em altura
+              children: [
+                Text('VOCÊ ACERTOU!'),
+                SizedBox(height: 10),
+                Image.asset(
+                  'assets/confetti-gif-1.gif', // Substitua pelo caminho da sua imagem
+                  height: 100, // Ajuste a altura da imagem conforme necessário
+                  width: 100, // Ajuste a largura da imagem conforme necessário
+                ),
+              ],
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajuste o padding do conteúdo
+            titlePadding: EdgeInsets.all(15), // Ajuste o padding do título
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Fechar'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
+  void _showDialogErro() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(msg),
-          content: Text('A resposta é: ${animalSelecionado.resposta}'),
+          title: Text('Você errou!'),
+          content: Text('Tente novamente!'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -941,6 +990,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
       },
     );
   }
+
 
   void _selecionarNovoAnimal() {
     animalSelecionado = listaDeAnimais[Random().nextInt(listaDeAnimais.length)];
@@ -1016,28 +1066,26 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     Future.delayed(Duration(seconds: 2), () {
       setState(() {
         _selecionarNovoAnimal();
-        player.play(AssetSource('gamemusic.mp3'));
       });
     });
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
-    widget.musicPlayer.stop();
     setState(() {
-
+      widget.musicPlayer.pause();
       _currentWords = result.recognizedWords;
       print(_currentWords);
+
       if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
-        _showDialog("Parabéns! Você acertou!");
+        parabens(context);
         _reiniciarJogoComDelay();
-      } else {
-        _showDialog("Você errou! Tente novamente!");
-        player.play(AssetSource('gamemusic.mp3'));
       }
+
+      widget.musicPlayer.resume();
     });
-
-
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -1074,7 +1122,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                   onPressed: () {
 
                     _startListening();
-                    widget.musicPlayer.play(AssetSource('gamemusic.mp3'));
                   },
                   tooltip: 'Listen',
                   child: Icon(
