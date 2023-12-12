@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:math';
 
 import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:speech_to_text/speech_to_text.dart'as stt;
 
 import 'firebase_options.dart';
 
@@ -841,7 +841,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: Text('Fechar'),
               ),
             ],
           ),
@@ -867,8 +867,9 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   final player = AudioPlayer();
   late Animal animalSelecionado;
   late String respostaAtual;
-  final SpeechToText _speechToText = SpeechToText();
-  String _currentWords = '';
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String resultText = "";
   final List<Animal> listaDeAnimais = [
     Animal(
       resposta: 'CACHORRO',
@@ -901,9 +902,44 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
       exibirMensagemBV(context, animalSelecionado);
     });
-    _initSpeech();
+    _speech = stt.SpeechToText();
     _selecionarNovoAnimal();
 
+  }
+
+  void _listen() async {
+    widget.musicPlayer.stop();
+    if (!_isListening) {
+
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            resultText = val.recognizedWords;
+            if(resultText == animalSelecionado.resposta.toLowerCase()) {
+              parabens(context);
+              widget.musicPlayer.resume();
+              _reiniciarJogoComDelay();
+            } else if (resultText.isEmpty){
+              print("VAZIO");
+            } else if(resultText != animalSelecionado.resposta.toLowerCase()){
+              erro(context);
+              widget.musicPlayer.resume();
+            }
+
+
+          }),
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+
+    }
   }
 
   void exibirMensagemBV(BuildContext context, Animal animal) {
@@ -984,41 +1020,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
 
 
 
-  void _showDialogErro() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return FractionallySizedBox(
-          widthFactor: 0.8, // Defina a largura do AlertDialog como 80% da largura da tela
-          child: AlertDialog(
-            title: Text('NÃO FOI DESSA VEZ!'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min, // Use MainAxisSize.min para permitir que o AlertDialog diminua em altura
-              children: [
-                Text('TENTE NOVAMENTE!'),
-                SizedBox(height: 10),
-                Image.asset(
-                  'assets/no-way-x.gif', // Substitua pelo caminho da sua imagem
-                  height: 100, // Ajuste a altura da imagem conforme necessário
-                  width: 100, // Ajuste a largura da imagem conforme necessário
-                ),
-              ],
-            ),
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajuste o padding do conteúdo
-            titlePadding: EdgeInsets.all(15), // Ajuste o padding do título
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Fechar'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
 
   void _selecionarNovoAnimal() {
@@ -1026,12 +1027,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     respostaAtual = '_${animalSelecionado.resposta.substring(1)}';
   }
 
-  /// This has to happen only once per app
-  void _initSpeech() async {
-    await _speechToText.initialize();
-    setState(() {
-    });
-  }
 
   /// Request microphone permission
   Future<void> _requestMicrophonePermission() async {
@@ -1041,7 +1036,7 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     })
         .onGrantedCallback(() {
 
-      _initSpeech();
+
     })
         .onPermanentlyDeniedCallback(() {
       // Your code
@@ -1076,21 +1071,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
   }
 
 
-  /// Each time to start a speech recognition session
-  void _startListening() async {
-    if (await Permission.microphone.isGranted) {
-      await _speechToText.listen(onResult: _onSpeechResult);
-
-      if(_speechToText.isListening) {
-        widget.musicPlayer.stop();
-      }
-      setState(() {});
-    } else {
-      // Microphone permission is not granted, request it
-      _requestMicrophonePermission();
-    }
-  }
-
   void _reiniciarJogoComDelay() {
     Future.delayed(Duration(seconds: 2), () {
       setState(() {
@@ -1099,22 +1079,6 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
     });
   }
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      widget.musicPlayer.pause();
-      _currentWords = result.recognizedWords;
-      print(_currentWords);
-
-      if (_currentWords.contains(animalSelecionado.resposta.toLowerCase())) {
-        parabens(context);
-        _reiniciarJogoComDelay();
-      } else {
-        _showDialogErro();
-      }
-
-      widget.musicPlayer.resume();
-    });
-  }
 
 
 
@@ -1149,24 +1113,59 @@ class _FalaParaTextoScreenState extends State<FalaParaTextoScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Qual o animal?',
+                  'QUAL O ANIMAL?',
                   style: TextStyle(fontSize: 18, color: Colors.black),
                 ),
                 const SizedBox(height: 16),
                 FloatingActionButton(
                   onPressed: () {
-
-                    _startListening();
+                    _listen();
                   },
                   tooltip: 'Listen',
                   child: Icon(
-                      _speechToText.isNotListening ? Icons.mic_off : Icons.mic),
+                      _speech.isNotListening ? Icons.mic_off : Icons.mic),
                 )
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void erro(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          widthFactor: 0.8, // Defina a largura do AlertDialog como 80% da largura da tela
+          child: AlertDialog(
+            title: Text('NÃO FOI DESSA VEZ!'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min, // Use MainAxisSize.min para permitir que o AlertDialog diminua em altura
+              children: [
+                Text('TENTE NOVAMENTE'),
+                SizedBox(height: 10),
+                Image.asset(
+                  'assets/no-way-x.gif', // Substitua pelo caminho da sua imagem
+                  height: 100, // Ajuste a altura da imagem conforme necessário
+                  width: 100, // Ajuste a largura da imagem conforme necessário
+                ),
+              ],
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Ajuste o padding do conteúdo
+            titlePadding: EdgeInsets.all(15), // Ajuste o padding do título
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Fechar'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
